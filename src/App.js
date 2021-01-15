@@ -6,11 +6,10 @@ import randomId from "./utils/randomID";
 
 import SettingsModal from "./components/SettingsModal";
 import NewsList from "./components/NewsList";
-
-import { Dimmer, Loader, Segment } from "semantic-ui-react";
+import NewsHeader from "./components/NewsHeader";
+import Loading from "./components/Loading";
 
 import "./App.css";
-import NewsHeader from "./components/NewsHeader";
 
 function App() {
   const [showingNews, setShowingNews] = useState([]); //only news that satisfy settings (they are showing in list)
@@ -90,7 +89,6 @@ function App() {
         handleSearchedString={handleSearchedString}
       />
       {loading ? <Loading /> : <NewsList allNews={showingNews} />}
-      <NewsList allNews={showingNews} />
       <SettingsModal
         show={showSettingModal}
         setOpen={setShowSettingModal}
@@ -108,15 +106,6 @@ function App() {
 
 export default App;
 
-function Loading() {
-  return (
-    <Segment basic className="news-loading">
-      <Dimmer active inverted>
-        <Loader size="large">Loading...</Loader>
-      </Dimmer>
-    </Segment>
-  );
-}
 /* 
 {
   title:

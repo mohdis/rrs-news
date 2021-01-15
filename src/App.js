@@ -56,8 +56,11 @@ function App() {
     );
   }, [rssUrls]);
 
-  function handleDeleteRssUrl(id) {
+  function handleDeleteRssUrl(id, name) {
     setRssUrls(rssUrls.filter((rssUrl) => rssUrl.id !== id));
+
+    const { [name]: _deletedPress, ...resetPress } = newsFeeds;
+    setNewsFeeds({ ...resetPress });
   }
 
   function handleAddRssUrl(newRssUrl) {

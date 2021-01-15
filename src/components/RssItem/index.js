@@ -13,7 +13,7 @@ export default function RssItem({ handleDelete, rssUrl: { id, url, name } }) {
         className="rss-item-icon"
         color="red"
         name="close"
-        onClick={() => handleDelete(id)}
+        onClick={() => handleDelete(id, name)}
       />
     </div>
   );

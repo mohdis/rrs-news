@@ -81,14 +81,7 @@ function App() {
     setSearchedString(value);
   }
 
-  if (showingNews.length <= 0)
-    return (
-      <Segment className="news-loading">
-        <Dimmer active inverted>
-          <Loader size="large">Loading...</Loader>
-        </Dimmer>
-      </Segment>
-    );
+  const loading = Object.keys(newsFeeds).length === 0; //if nothing loaded yet
 
   return (
     <Fragment>
@@ -96,6 +89,7 @@ function App() {
         handleShowSettingModal={handleShowSettingModal}
         handleSearchedString={handleSearchedString}
       />
+      {loading ? <Loading /> : <NewsList allNews={showingNews} />}
       <NewsList allNews={showingNews} />
       <SettingsModal
         show={showSettingModal}
@@ -114,6 +108,15 @@ function App() {
 
 export default App;
 
+function Loading() {
+  return (
+    <Segment basic className="news-loading">
+      <Dimmer active inverted>
+        <Loader size="large">Loading...</Loader>
+      </Dimmer>
+    </Segment>
+  );
+}
 /* 
 {
   title:

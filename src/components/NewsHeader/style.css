@@ -1,0 +1,9 @@
+.news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 1rem;
+    width: 100vw;
+    margin: 0 1rem;
+  }

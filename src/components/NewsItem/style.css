@@ -36,3 +36,6 @@
     display: flex;
     justify-content: space-between;
   }
+  .news-item-redirect {
+    cursor: pointer;
+  }

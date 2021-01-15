@@ -36,7 +36,7 @@ function flattenNewsFeedsObject(newsFeeds) {
         id: randomId(),
         title: newsItem.title,
         desc: newsItem.contentSnippet,
-        link: newsItem.guid,
+        link: newsItem.guid || newsItem.link,
         press: pressName,
         date: new Date(newsItem.pubDate),
         imageUrl: newsItem.enclosure ? newsItem.enclosure.url : null,

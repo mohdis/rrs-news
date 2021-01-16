@@ -7,7 +7,7 @@ export default function extractNewsWithSettings(
   console.log(newsFeeds);
 
   const sortedNews = flattenNewsFeedsObject(newsFeeds).sort(
-    (a, b) => a.date < b.date
+    (a, b) => b.date - a.date
   );
 
   const finalResult = sortedNews

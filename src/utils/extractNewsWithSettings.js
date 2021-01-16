@@ -2,7 +2,7 @@ import randomId from "./randomID";
 
 export default function extractNewsWithSettings(
   newsFeeds,
-  { searchedString, newsLimit, dateBoundary } //options
+  { searchedString, newsLimit, dateBoundary, activeFilters } //options
 ) {
   console.log(newsFeeds);
 
@@ -11,18 +11,23 @@ export default function extractNewsWithSettings(
   );
 
   const finalResult = sortedNews
-    .slice(0, newsLimit > sortedNews.length ? sortedNews.length : newsLimit)
-    .filter(({ date, title, desc }) => {
+    .filter(({ date, title, desc, press }) => {
       if (date <= dateBoundary.maxDate && date >= dateBoundary.minDate) {
         if (
           title.toLowerCase().includes(searchedString.toLowerCase()) ||
           desc.toLowerCase().includes(searchedString.toLowerCase())
         ) {
-          return true;
+          if (activeFilters.length === 0) {
+            return true;
+          }
+          if (activeFilters.includes(press)) {
+            return true;
+          }
         }
       }
       return false;
-    });
+    })
+    .slice(0, newsLimit > sortedNews.length ? sortedNews.length : newsLimit);
 
   console.log(finalResult);
 

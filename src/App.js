@@ -8,6 +8,7 @@ import SettingsModal from "./components/SettingsModal";
 import NewsList from "./components/NewsList";
 import NewsHeader from "./components/NewsHeader";
 import Loading from "./components/Loading";
+import NewsToolbar from "./components/NewsToolbar";
 
 import "./App.css";
 
@@ -16,8 +17,10 @@ function App() {
   const [newsFeeds, setNewsFeeds] = useState({}); //all news from all endpoints
   const [newsLimit, setNewsLimit] = useState(20);
   const [searchedString, setSearchedString] = useState("");
+  const [activeFilters, setActiveFilters] = useState([]);
 
   const [dateBoundary, setDateBoundary] = useState({
+    // minDate: new Date() - 1000 * 60 * 60 * 24 * 10, // 10 days ago
     minDate: new Date("1999/07/30"),
     maxDate: new Date(),
   });
@@ -44,9 +47,10 @@ function App() {
           searchedString,
           dateBoundary,
           newsLimit,
+          activeFilters,
         })
       ),
-    [newsFeeds, searchedString, dateBoundary, newsLimit]
+    [newsFeeds, searchedString, dateBoundary, newsLimit, activeFilters]
   );
 
   useEffect(() => {
@@ -87,6 +91,10 @@ function App() {
       <NewsHeader
         handleShowSettingModal={handleShowSettingModal}
         handleSearchedString={handleSearchedString}
+      />
+      <NewsToolbar
+        filters={Object.keys(newsFeeds)}
+        setActiveFilters={setActiveFilters}
       />
       {loading ? <Loading /> : <NewsList allNews={showingNews} />}
       <SettingsModal

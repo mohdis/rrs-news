@@ -5,6 +5,7 @@ import "./style.css";
 export default function NewsHeader({
   handleShowSettingModal,
   handleSearchedString,
+  searchedString,
 }) {
   return (
     <div className="news-header">
@@ -12,6 +13,7 @@ export default function NewsHeader({
         icon="search"
         placeholder="Search..."
         onChange={({ target }) => handleSearchedString(target.value)}
+        value={searchedString}
       />
       <Button
         content="Settings"

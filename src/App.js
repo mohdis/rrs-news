@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import newsFetcher from "./utils/newsFetcher";
 import extractNewsWithSettings from "./utils/extractNewsWithSettings";
 import randomId from "./utils/randomID";
+import { getItemFromLS, setItemOnLS } from "./utils/lsService";
 
 import SettingsModal from "./components/SettingsModal";
 import NewsList from "./components/NewsList";
@@ -25,20 +26,21 @@ function App() {
     maxDate: new Date(),
   });
 
-  const [rssUrls, setRssUrls] = useState([
-    {
-      url: "https://www.nasa.gov/rss/dyn/earth.rss",
-      name: "NASA",
-      id: randomId(),
-    },
-    {
-      url: "http://feeds.bbci.co.uk/news/england/london/rss.xml",
-      name: "BBC",
-      id: randomId(),
-    },
-  ]);
+  const [rssUrls, setRssUrls] = useState([]);
 
   const [showSettingModal, setShowSettingModal] = useState(false);
+
+  // restore state from localStorage
+  useEffect(() => {
+    const initialRssUrls = getItemFromLS('rssUrls');
+    const initialNewsLimit = getItemFromLS('newsLimit');
+    const initialSearchedString = getItemFromLS('searchedString');
+    const initialActiveFilters = getItemFromLS('activeFilters');
+    initialRssUrls && setRssUrls(initialRssUrls);
+    initialNewsLimit && setNewsLimit(initialNewsLimit);
+    initialSearchedString && setSearchedString(initialSearchedString);
+    initialActiveFilters && setActiveFilters(initialActiveFilters);
+  }, []);
 
   useEffect(
     () =>
@@ -59,6 +61,14 @@ function App() {
     );
   }, [rssUrls]);
 
+  // save state in localStorage
+  useEffect(() => {
+    setItemOnLS('rssUrls', rssUrls);
+    setItemOnLS('newsLimit', newsLimit);
+    setItemOnLS('searchedString', searchedString);
+    setItemOnLS('activeFilters', activeFilters);
+  }, [activeFilters, newsLimit, rssUrls, searchedString]);
+
   function handleDeleteRssUrl(id, name) {
     setRssUrls(rssUrls.filter((rssUrl) => rssUrl.id !== id));
 
@@ -67,7 +77,23 @@ function App() {
   }
 
   function handleAddRssUrl(newRssUrl) {
-    setRssUrls([...rssUrls, newRssUrl]);
+    if (newRssUrl.name === '_example_') {
+      setRssUrls([...rssUrls, ...[
+        {
+          url: "https://www.nasa.gov/rss/dyn/earth.rss",
+          name: "NASA",
+          id: randomId(),
+        },
+        {
+          url: "http://feeds.bbci.co.uk/news/england/london/rss.xml",
+          name: "BBC",
+          id: randomId(),
+        },
+      ]]);
+    }
+    else {
+      setRssUrls([...rssUrls, newRssUrl]);
+    }
   }
 
   function handleNewsLimit(value) {
@@ -84,17 +110,19 @@ function App() {
     setSearchedString(value);
   }
 
-  const loading = Object.keys(newsFeeds).length === 0; //if nothing loaded yet
+  const loading = rssUrls?.length > 0 && Object.keys(newsFeeds).length === 0; //if nothing loaded yet
 
   return (
     <Fragment>
       <NewsHeader
         handleShowSettingModal={handleShowSettingModal}
         handleSearchedString={handleSearchedString}
+        searchedString={searchedString}
       />
       <NewsToolbar
         filters={Object.keys(newsFeeds)}
         setActiveFilters={setActiveFilters}
+        activeFilters={activeFilters}
       />
       {loading ? <Loading /> : <NewsList allNews={showingNews} />}
       <SettingsModal

@@ -8,6 +8,8 @@ import { Button, Divider, Form, Header, Icon, Modal } from "semantic-ui-react";
 
 import "./style.css";
 
+const urlRegex = /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
+
 export default function SettingsModal({
   setOpen,
   show,
@@ -21,6 +23,7 @@ export default function SettingsModal({
 }) {
   const [newRssName, setNewRssName] = useState("");
   const [newRssUrl, setNewRssUrl] = useState("");
+  const [errors, setErrors] = useState({});
 
   return (
     <Modal
@@ -33,11 +36,13 @@ export default function SettingsModal({
         <RssList rssUrls={rssUrls} handleDeleteRssUrl={handleDeleteRssUrl} />
         <Form
           onSubmit={() => {
-            handleAddRssUrl({
-              name: newRssName,
-              url: newRssUrl,
-              id: randomId(),
-            });
+            if (!errors.url && !errors.name && newRssUrl.length > 0 && newRssName.length > 0 ) {
+              handleAddRssUrl({
+                name: newRssName,
+                url: newRssUrl,
+                id: randomId(),
+              });
+            }
           }}
         >
           <Form.Group widths="equal">
@@ -49,6 +54,14 @@ export default function SettingsModal({
               onChange={({ target }) => {
                 setNewRssUrl(target.value);
               }}
+              onBlur={() => {
+                if (!newRssUrl.match(urlRegex || newRssUrl.length === 0)) {
+                  setErrors(ps => ({...ps, url: 'Url is not valid!'}));
+                }
+                else {
+                  setErrors(ps => ({...ps, url: null}));
+                }
+              }}
             />
             <Form.Field
               label="Name"
@@ -57,6 +70,14 @@ export default function SettingsModal({
               value={newRssName}
               onChange={({ target }) => {
                 setNewRssName(target.value);
+              }}
+              onBlur={() => {
+                if (newRssName.length === 0) {
+                  setErrors(ps => ({...ps, name: 'Name must be specified!'}));
+                }
+                else {
+                  setErrors(ps => ({...ps, name: null}));
+                }
               }}
             />
           </Form.Group>
@@ -69,7 +90,11 @@ export default function SettingsModal({
               label="News number limit"
               placeholder="Enter a number"
               name="limit"
-              onChange={({ target: { value } }) => handleNewsLimit(value)}
+              onChange={({ target: { value } }) => {
+                if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                  handleNewsLimit(value)
+                }
+              }}
               value={newsLimit}
             />
           </Form.Group>
@@ -91,6 +116,9 @@ export default function SettingsModal({
             onChange={(value) => handleSetDateBoundary("maxDate", value)}
           />
         </div>
+        {(errors.url || errors.name) && <Divider />}
+        {errors.url && <div className="error-message"><Icon name="warning"/>{errors.url}</div>}
+        {errors.name && <div className="error-message"><Icon name="warning"/>{errors.name}</div>}
       </Modal.Content>
       <Modal.Actions>
         <Button color="google plus" onClick={() => setOpen(false)}>

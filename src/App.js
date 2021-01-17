@@ -9,7 +9,6 @@ import SettingsModal from "./components/SettingsModal";
 import NewsList from "./components/NewsList";
 import NewsHeader from "./components/NewsHeader";
 import Loading from "./components/Loading";
-import NewsToolbar from "./components/NewsToolbar";
 
 import "./App.css";
 
@@ -118,8 +117,6 @@ function App() {
         handleShowSettingModal={handleShowSettingModal}
         handleSearchedString={handleSearchedString}
         searchedString={searchedString}
-      />
-      <NewsToolbar
         filters={Object.keys(newsFeeds)}
         setActiveFilters={setActiveFilters}
         activeFilters={activeFilters}

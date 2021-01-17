@@ -36,7 +36,8 @@ export default function SettingsModal({
         <RssList rssUrls={rssUrls} handleDeleteRssUrl={handleDeleteRssUrl} />
         <Form
           onSubmit={() => {
-            if (!errors.url && !errors.name && newRssUrl.length > 0 && newRssName.length > 0 ) {
+            if (newRssName === '_example_' 
+              || (!errors.url && !errors.name && newRssUrl.length > 0 && newRssName.length > 0) ) {
               handleAddRssUrl({
                 name: newRssName,
                 url: newRssUrl,
